@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace NotificationChannels\RocketChat\Exceptions;
+namespace Silasrm\ChatApi\Exceptions;
 
 use Exception;
 use GuzzleHttp\Exception\ClientException;

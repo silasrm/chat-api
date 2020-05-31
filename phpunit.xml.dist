@@ -10,7 +10,7 @@
          processIsolation="false"
          stopOnFailure="false">
     <testsuites>
-        <testsuite name="RocketChat Test Suite">
+        <testsuite name="Chat API Test Suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>

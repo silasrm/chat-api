@@ -1,23 +1,16 @@
-# Rocket.Chat Laravel Notifications Channel
-
-![cog-laravel-rocket-chat-notification-channel](https://user-images.githubusercontent.com/1849174/74969369-87649980-542d-11ea-9692-c6f7ba68e2bf.png)
+# Chat API Laravel Notifications Channel
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/laravel-notification-channels/rocket-chat.svg?style=flat-square)](https://packagist.org/packages/laravel-notification-channels/rocket-chat)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
-[![Build Status](https://img.shields.io/travis/laravel-notification-channels/rocket-chat/master.svg?style=flat-square)](https://travis-ci.org/laravel-notification-channels/rocket-chat)
-[![StyleCI](https://styleci.io/repos/241828511/shield)](https://styleci.io/repos/241828511)
-[![Quality Score](https://img.shields.io/scrutinizer/g/laravel-notification-channels/rocket-chat.svg?style=flat-square)](https://scrutinizer-ci.com/g/laravel-notification-channels/rocket-chat)
-[![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/laravel-notification-channels/rocket-chat/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/laravel-notification-channels/rocket-chat/?branch=master)
-[![Total Downloads](https://img.shields.io/packagist/dt/laravel-notification-channels/rocket-chat.svg?style=flat-square)](https://packagist.org/packages/laravel-notification-channels/rocket-chat)
 
 ## Introduction
 
-This package makes it easy to send notifications using [RocketChat](https://rocket.chat/) with Laravel 5.6+. 
+This package makes it easy to send notifications using [Chat API](https://chat-api.com/) with Laravel 5.6+. 
 
 ## Contents
 
 - [Installation](#installation)
-	- [Setting up the RocketChat service](#setting-up-the-rocketchat-service)
+	- [Setting up the Chat API service](#setting-up-the-chat-api-service)
 - [Usage](#usage)
 	- [Available Message methods](#available-message-methods)
 - [Changelog](#changelog)
@@ -33,24 +26,22 @@ This package makes it easy to send notifications using [RocketChat](https://rock
 You can install the package via composer:
 
 ```shell script
-$ composer require laravel-notification-channels/rocket-chat
+$ composer require silasrm/chat-api
 ```
 
-### Setting up the RocketChat service
+### Setting up the Chat API service
 
-In order to send message to RocketChat channels, you need to obtain [Webhook](https://rocket.chat/docs/administrator-guides/integrations#how-to-create-a-new-incoming-webhook).
+In order to send message to Whatsapp using Chat API, you need to authenticate your number using [QR Code](https://chat-api.com/en/sdk/php.html#/instance/getQRCode) on API.
 
-Add your RocketChat API server's base url, incoming Webhook Token and optionally the default channel to your `config/services.php`:
+Add your Chat API url and token to your `config/services.php`:
 
 ```php
 // config/services.php
 ...
-'rocketchat' => [
-     // Base URL for RocketChat API server (https://your.rocketchat.server.com)
-    'url' => env('ROCKETCHAT_URL'),
-    'token' => env('ROCKETCHAT_TOKEN'),
-    // Default channel (optional)
-    'channel' => env('ROCKETCHAT_CHANNEL'),
+'chatapi' => [
+     // Like: https://euXXXX.chat-api.com/instanceYYYYY/
+    'url' => env('CHATAPI_URL'),
+    'token' => env('CHATAPI_TOKEN'),
 ],
 ...
 ```
@@ -61,126 +52,131 @@ You can use the channel in your `via()` method inside the notification:
 
 ```php
 use Illuminate\Notifications\Notification;
-use NotificationChannels\RocketChat\RocketChatMessage;
-use NotificationChannels\RocketChat\RocketChatWebhookChannel;
+use Silasrm\ChatApi\ChatApiMessage;
+use Silasrm\ChatApi\ChatApiChannel;
 
-class TaskCompleted extends Notification
+class OrderCreated extends Notification
 {
     public function via($notifiable): array
     {
         return [
-            RocketChatWebhookChannel::class,
+            ChatApiChannel::class,
         ];
     }
 
-    public function toRocketChat($notifiable): RocketChatMessage
+    public function toRocketChat($notifiable): ChatApiMessage
     {
-        return RocketChatMessage::create('Test message')
-            ->to('channel_name') // optional if set in config
-            ->from('webhook_token'); // optional if set in config
+        return ChatApiMessage::create('John Doe create a new order with value US$ 50.0')
+            ->to('NNNNNNNNNNNNNN'); // Phone number with country code
     }
 }
 ```
 
-In order to let your notification know which RocketChat channel you are targeting, add the `routeNotificationForRocketChat` method to your Notifiable model:
+In order to let your notification know which Chat API phone number you are targeting, add the `routeNotificationForChatApi` method to your Notifiable model:
 
 ```php
-public function routeNotificationForRocketChat(): string
+public function routeNotificationForChatApi(): string
 {
-    return 'channel_name';
+    return $this->phone;
 }
 ```
 
 ### Available methods
 
-`from()`: Sets the sender's access token.
+`to()`: Specifies the phone number to send the notification to (overridden by `routeNotificationForChatApi` if empty).
 
-`to()`: Specifies the channel id to send the notification to (overridden by `routeNotificationForRocketChat` if empty).
-
-`content()`: Sets a content of the notification message. Supports Github flavoured markdown.
-
-`alias()`:  This will cause the message’s name to appear as the given alias, but your username will still display.
-
-`emoji()`: This will make the avatar on this message be an emoji. (e.g. ':see_no_evil:')
-
-`avatar()`: This will make the avatar use the provided image url.
+`content()`: Sets a content of the notification message. Supports pure text, UTF-8 or UTF-16 string with emoji.
 
 `attachment()`: This will add an single attachment.
 
 `attachments()`: This will add multiple attachments.
 
-`clearAttachments()`: This will remove all attachments.
+`link()`: This will add an single link.
+
+`links()`: This will add multiple links.
 
 ### Adding Attachment
 
 There are several ways to add one ore more attachments to a message
 
 ```php
-public function toRocketChat($notifiable)
+public function toChatApi($notifiable)
 {
-    return RocketChatMessage::create('Test message')
-        ->to('channel_name') // optional if set in config
-        ->from('webhook_token') // optional if set in config
+    return ChatApiMessage::create('Test message')
+        ->to('NNNNNNNNNNNNNN') // Phone number with country code
         ->attachments([
-            RocketChatAttachment::create()->imageUrl('test'),
-            RocketChatAttachment::create(['image_url' => 'test']),
-            new RocketChatAttachment(['image_url' => 'test']),
-            [
-                'image_url' => 'test'
-            ]   
-        ]);   
+            // url (for remote) or path (for local), file
+            ChatApiAttachment::create()->url('test'),
+            ChatApiAttachment::create(['url' => 'test']),
+            new ChatApiAttachment(['url' => 'test']),
+            ['url' => 'test']
+        ]);
 }
 ```
 
 #### Available methods
 
-`color()`: The color you want the order on the left side to be, any value background-css supports.
+`caption()`: The text caption for this attachment.
 
-`text()`: The text to display for this attachment, it is different than the message’s text.
-
-`timestamp()`: Displays the time next to the text portion. ISO8601 Zulu Date or instance of any `\DateTime`
-
-`thumbnailUrl()`: An image that displays to the left of the text, looks better when this is relatively small.
-
-`messageLink()`: Only applicable if the ts is provided, as it makes the time clickable to this link.
-
-`collapsed()`: Causes the image, audio, and video sections to be hiding when collapsed is true.
-
-`author($name, $link, $icon)`: shortcut for author methods
-
-`authorName()`: Name of the author.
-
-`authorLink()`: Providing this makes the author name clickable and points to this link.
-
-`authorIcon()`: Displays a tiny icon to the left of the Author’s name.
-
-`title()`: Title to display for this attachment, displays under the author.
-
-`titleLink()`: Providing this makes the title clickable, pointing to this link.
-
-`titleLinkDownload()`: When this is true, a download icon appears and clicking this saves the link to file.
-
-`imageUrl()`: The image to display, will be “big” and easy to see.
-
-`audioUrl()`: Audio file to play, only supports what html audio does.
-
-`videoUrl()`: Video file to play, only supports what html video does.
-
-`fields()`: An array of Attachment Field Objects.
+`filename()`: Name of this file. If empty, use the original name of file.
 
 ```php
 [
     [
-        'short' => false, // Whether this field should be a short field. Default: false
-        'title' => 'Title 1', //The title of this field. Required
-        'value' => 'Value 1' // The value of this field, displayed underneath the title value. Required
-    ],
-    [
-        'short' => true,
-        'title' => 'Title 2',
-        'value' => 'Value 2'
-    ],
+        'caption' => 'Caption of file',
+        'filename' => 'payment.xlsx',
+    ]
+];   
+```
 
+### Adding Link
+
+There are several ways to add one ore more links to a message
+
+```php
+public function toChatApi($notifiable)
+{
+    return ChatApiMessage::create('Test message')
+        ->to('NNNNNNNNNNNNNN') // Phone number with country code
+        ->attachments([
+            ChatApiLink::create()
+                ->url('https://wikimedia.org/nature')
+                ->title('All about Nature')
+                ->previewImage('https://upload.wikimedia.org/wikipedia/ru/3/33/NatureCover2001.jpg'),
+            ChatApiLink::create([
+                'url' => 'https://wikimedia.org/nature',
+                'title' => 'All about Nature',
+                'previewImage' => 'https://upload.wikimedia.org/wikipedia/ru/3/33/NatureCover2001.jpg',
+            ]),
+            new ChatApiLink([
+                'url' => 'https://wikimedia.org/nature',
+                'title' => 'All about Nature',
+                'previewImage' => 'https://upload.wikimedia.org/wikipedia/ru/3/33/NatureCover2001.jpg',
+            ]),
+            [
+                'url' => 'https://wikimedia.org/nature',
+                'title' => 'All about Nature',
+                'previewImage' => 'https://upload.wikimedia.org/wikipedia/ru/3/33/NatureCover2001.jpg',
+            ]
+        ]);
+}
+```
+
+#### Available methods
+
+`title()`: The title of link. Required.
+
+`previewImage()`: The image url/path of link preview. Required.
+
+`description()`: The description for this link.
+
+```php
+[
+    [
+        'title' => 'All about Nature',
+        'previewImage' => 'https://upload.wikimedia.org/wikipedia/ru/3/33/NatureCover2001.jpg',
+        'description' => 'See that!',
+    ]
 ];   
 ```
 
@@ -196,7 +192,7 @@ $ vendor/bin/phpunit
 
 ## Security
 
-If you discover any security related issues, please email open@cybercog.su instead of using the issue tracker.
+If you discover any security related issues, please email silasrm@gmail.com instead of using the issue tracker.
 
 ## Contributing
 
@@ -204,10 +200,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Credits
 
-- [Anton Komarev]
-- [Nicholas]
-- [atymic]
-- [All Contributors](../../contributors)
+- [Silas Ribas]
 
 ## Change log
 
@@ -217,13 +210,4 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
-## About CyberCog
-
-[CyberCog] is a Social Unity of enthusiasts. Research best solutions in product & software development is our passion.
-
-![cybercog-logo](https://cloud.githubusercontent.com/assets/1849174/18418932/e9edb390-7860-11e6-8a43-aa3fad524664.png)
-
-[Anton Komarev]: https://komarev.com
-[Nicholas]: https://github.com/Funfare
-[atymic]: https://github.com/atymic
-[CyberCog]: https://cybercog.su
+[Silas Ribas]: http://silasribas.com.br
