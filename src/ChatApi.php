@@ -65,7 +65,7 @@ final class ChatApi
                     $filename = $pathinfo['basename'];
                 } elseif (isset($attachment['path']) && !empty($attachment['path'])) {
                     $pathinfo = pathinfo($attachment['path']);
-                    $body = 'data:' . mime_content_type($attachment['path']) . ';base64,' . file_get_contents($attachment['filename']);
+                    $body = 'data:' . mime_content_type($attachment['path']) . ';base64,' . base64_encode(file_get_contents($attachment['filename']));
                     $filename = $pathinfo['basename'];
                 }
 
@@ -80,7 +80,7 @@ final class ChatApi
         if (isset($message['links']) && !empty($message['links'])) {
             foreach ($message['links'] as $link) {
                 $pathinfo = pathinfo($link['previewBase64']);
-                $previewBase64 = 'data:image/' . $pathinfo['extension'] . ';base64,' . file_get_contents($link['previewBase64']);
+                $previewBase64 = 'data:image/' . $pathinfo['extension'] . ';base64,' . base64_encode(file_get_contents($link['previewBase64']));
 
                 $this->sendLink($to, $link['url'], $link['title'] ?? $link['url'], $previewBase64, $link['description'] ?? null);
             }
