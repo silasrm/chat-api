@@ -65,7 +65,7 @@ final class ChatApi
                     $filename = $pathinfo['basename'];
                 } elseif (isset($attachment['path']) && !empty($attachment['path'])) {
                     $pathinfo = pathinfo($attachment['path']);
-                    $body = 'data:' . mime_content_type($attachment['path']) . ';base64,' . base64_encode(file_get_contents($attachment['filename']));
+                    $body = 'data:' . mime_content_type($attachment['path']) . ';base64,' . base64_encode(file_get_contents($attachment['path']));
                     $filename = $pathinfo['basename'];
                 }
 
