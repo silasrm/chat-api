@@ -98,7 +98,7 @@ final class ChatApi
      */
     public function sendFile($channel, $body, $filename, $caption = null, $channelType = 'phone')
     {
-        return json_decode($this->sdk->query('sendFile', [$channelType => $channel, 'body' => $body, 'filename' => $filename, 'caption' => $caption]), 1)['sent'];
+        return json_decode($this->sdk->query('sendFile', [$channelType => $channel, 'body' => $body, 'filename' => $filename, 'caption' => $caption]), true)['sent'];
     }
 
     /**
@@ -113,6 +113,6 @@ final class ChatApi
      */
     public function sendLink($channel, $body, $title, $previewBase64, $description = null, $channelType = 'phone')
     {
-        return json_decode($this->sdk->query('sendLink', [$channelType => $channel, 'body' => $body, 'title' => $title, 'previewBase64' => $previewBase64, 'description' => $description]), 1)['sent'];
+        return json_decode($this->sdk->query('sendLink', [$channelType => $channel, 'body' => $body, 'title' => $title, 'previewBase64' => $previewBase64, 'description' => $description]), true)['sent'];
     }
 }
