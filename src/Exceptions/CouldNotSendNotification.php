@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Silasrm\ChatApi\Exceptions;
 
 use Exception;
-use GuzzleHttp\Exception\ClientException;
 use RuntimeException;
 
 final class CouldNotSendNotification extends RuntimeException
@@ -17,7 +16,7 @@ final class CouldNotSendNotification extends RuntimeException
      */
     public static function missingTo(): self
     {
-        return new static('RocketChat notification was not sent. Channel identifier is missing.');
+        return new static('Chat API notification was not sent. Channel identifier is missing.');
     }
 
     /**
@@ -27,31 +26,17 @@ final class CouldNotSendNotification extends RuntimeException
      */
     public static function missingFrom(): self
     {
-        return new static('RocketChat notification was not sent. Access token is missing.');
+        return new static('Chat API notification was not sent. Access token is missing.');
     }
 
     /**
-     * Thrown when there's a bad response from the RocketChat.
+     * Thrown when we're unable to communicate with Chat API.
      *
-     * @param  \GuzzleHttp\Exception\ClientException  $exception
+     * @param Exception $exception
      * @return static
      */
-    public static function rocketChatRespondedWithAnError(ClientException $exception): self
+    public static function couldNotCommunicateWithChatApi(Exception $exception): self
     {
-        $message = $exception->getResponse()->getBody();
-        $code = $exception->getResponse()->getStatusCode();
-
-        return new static("RocketChat responded with an error `{$code} - {$message}`");
-    }
-
-    /**
-     * Thrown when we're unable to communicate with RocketChat.
-     *
-     * @param  \Exception  $exception
-     * @return static
-     */
-    public static function couldNotCommunicateWithRocketChat(Exception $exception): self
-    {
-        return new static("The communication with RocketChat failed. Reason: {$exception->getMessage()}");
+        return new static("The communication with Chat API failed. Reason: {$exception->getMessage()}");
     }
 }
