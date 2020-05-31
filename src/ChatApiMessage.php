@@ -12,10 +12,10 @@ class ChatApiMessage
     /** @var string The text content of the message. */
     protected $content;
 
-    /** @var \Silasrm\ChatApi\ChatApiAttachment[] Attachments of the message. */
+    /** @var ChatApiAttachment[] Attachments of the message. */
     protected $attachments = [];
 
-    /** @var \Silasrm\ChatApi\ChatApiLink[] Links of the message. */
+    /** @var ChatApiLink[] Links of the message. */
     protected $links = [];
 
     /**
@@ -74,7 +74,7 @@ class ChatApiMessage
     /**
      * Add an link to the message.
      *
-     * @param array|\Silasrm\ChatApi\ChatApiLink $link
+     * @param array|ChatApiLink $link
      * @return $this
      */
     public function link($link): self
@@ -91,7 +91,7 @@ class ChatApiMessage
     /**
      * Add an attachment to the message.
      *
-     * @param array|\Silasrm\ChatApi\ChatApiAttachment $attachment
+     * @param array|ChatApiAttachment $attachment
      * @return $this
      */
     public function attachment($attachment): self
@@ -108,7 +108,7 @@ class ChatApiMessage
     /**
      * Add multiple attachments to the message.
      *
-     * @param array|\Silasrm\ChatApi\ChatApiAttachment[] $attachments
+     * @param array|ChatApiAttachment[] $attachments
      * @return $this
      */
     public function attachments(array $attachments): self

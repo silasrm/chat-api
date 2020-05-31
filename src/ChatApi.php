@@ -54,7 +54,7 @@ final class ChatApi
     public function sendMessage(string $to, array $message): void
     {
         if (isset($message['body']) && !empty($message['body'])) {
-            $this->sdk->sendPhoneMessage($to, $message);
+            $this->sdk->sendPhoneMessage($to, $message['body']);
         }
 
         if (isset($message['attachments']) && !empty($message['attachments'])) {
@@ -74,7 +74,6 @@ final class ChatApi
                 }
 
                 $this->sendFile($to, $body, $filename, $attachment['caption'] ?? null);
-
             }
         }
 
