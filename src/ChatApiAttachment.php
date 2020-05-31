@@ -85,12 +85,12 @@ class ChatApiAttachment
      */
     public function path(string $path): self
     {
-        if (!file_exists($this->path)) {
-            throw new InvalidArgumentException(sprintf('File path dont exists: %s', $this->path));
+        if (!file_exists($path)) {
+            throw new InvalidArgumentException(sprintf('File path dont exists: %s', $path));
         }
 
-        if (!is_file($this->path) || is_dir($this->path)) {
-            throw new InvalidArgumentException(sprintf('File path is invalid: %s', $this->path));
+        if (!is_file($path) || is_dir($path)) {
+            throw new InvalidArgumentException(sprintf('File path is invalid: %s', $path));
         }
 
         $this->path = $path;
