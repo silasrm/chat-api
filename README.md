@@ -138,7 +138,7 @@ public function toChatApi($notifiable)
 {
     return ChatApiMessage::create('Test message')
         ->to('NNNNNNNNNNNNNN') // Phone number with country code
-        ->attachments([
+        ->links([
             ChatApiLink::create()
                 ->url('https://wikimedia.org/nature')
                 ->title('All about Nature')

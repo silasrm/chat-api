@@ -48,7 +48,7 @@ class ChatApiMessage
      * Set the ChatApi channel the message should be sent to.
      *
      * @param string $channel
-     * @return $this
+     * @return ChatApiMessage
      */
     public function to(string $channel): self
     {
@@ -62,7 +62,7 @@ class ChatApiMessage
      * Supports GitHub flavoured markdown.
      *
      * @param string $content
-     * @return $this
+     * @return ChatApiMessage
      */
     public function content(string $content): self
     {
@@ -75,7 +75,7 @@ class ChatApiMessage
      * Add an link to the message.
      *
      * @param array|ChatApiLink $link
-     * @return $this
+     * @return ChatApiMessage
      */
     public function link($link): self
     {
@@ -89,10 +89,25 @@ class ChatApiMessage
     }
 
     /**
+     * Add multiple links to the message.
+     *
+     * @param array|ChatApiLink[] $links
+     * @return ChatApiMessage
+     */
+    public function links(array $links): self
+    {
+        foreach ($links as $link) {
+            $this->link($link);
+        }
+
+        return $this;
+    }
+
+    /**
      * Add an attachment to the message.
      *
      * @param array|ChatApiAttachment $attachment
-     * @return $this
+     * @return ChatApiMessage
      */
     public function attachment($attachment): self
     {
@@ -109,7 +124,7 @@ class ChatApiMessage
      * Add multiple attachments to the message.
      *
      * @param array|ChatApiAttachment[] $attachments
-     * @return $this
+     * @return ChatApiMessage
      */
     public function attachments(array $attachments): self
     {
