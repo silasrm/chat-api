@@ -39,7 +39,6 @@ final class ChatApiChannel
         $message = $notification->toChatApi($notifiable);
 
         $to = $message->getChannel() ?: $notifiable->routeNotificationFor('ChatApi');
-        $to = $to ?: $this->chatApi->getDefaultChannel();
         if ($to === null) {
             throw CouldNotSendNotification::missingTo();
         }
