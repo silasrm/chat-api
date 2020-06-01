@@ -7,9 +7,7 @@
 
 This package makes it easy to send notifications using [Chat API](https://chat-api.com/) with Laravel 5.6+. 
 
-First of all: contract or get your free demo account and setup your Whatsapp number:
-
-![Whatsapp authentication process](https://chat-api.com/img/whatsapp_auth_en.gif)
+First of all: contract or get your free demo account and setup your Whatsapp number: [Whatsapp authentication process](https://chat-api.com/img/whatsapp_auth_en.gif)
 
 ## Contents
 
