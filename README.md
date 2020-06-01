@@ -1,6 +1,6 @@
 # Chat API Laravel Notifications Channel
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/laravel-notification-channels/rocket-chat.svg?style=flat-square)](https://packagist.org/packages/laravel-notification-channels/rocket-chat)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/silasrm/chat-api.svg?style=flat-square)](https://packagist.org/packages/silasrm/chat-api)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 
 ## Introduction
