@@ -54,7 +54,7 @@ final class ChatApi
     public function sendMessage(string $to, array $message): void
     {
         if (isset($message['body']) && !empty($message['body'])) {
-            $this->sdk->sendPhoneMessage($to, $message['body']);
+            $this->sendPhoneMessage($to, $message['body']);
         }
 
         if (isset($message['attachments']) && !empty($message['attachments'])) {
@@ -89,6 +89,17 @@ final class ChatApi
                 $this->sendLink($to, $link['url'], $link['title'] ?? $link['url'], $previewBase64, $link['description'] ?? null);
             }
         }
+    }
+
+    /**
+     * Send message to phone number
+     * @param string $chat
+     * @param string $text
+     * @return boolean
+     */
+    public function sendPhoneMessage($chat, $text)
+    {
+        return json_decode($this->sdk->query('sendMessage', ['phone' => $chat, 'body' => $text], 'POST'), 1)['sent'];
     }
 
     /**
