@@ -80,7 +80,9 @@ final class ChatApi
         if (isset($message['links']) && !empty($message['links'])) {
             foreach ($message['links'] as $link) {
                 $pathinfo = pathinfo($link['previewBase64']);
-                $previewBase64 = 'data:image/' . $pathinfo['extension'] . ';base64,' . base64_encode(file_get_contents($link['previewBase64']));
+                $base64 = strpos($link['previewBase64'], 'data:image/') === false
+                    ? base64_encode(file_get_contents($link['previewBase64'])) : $link['previewBase64'];
+                $previewBase64 = 'data:image/' . $pathinfo['extension'] . ';base64,' . $base64;
 
                 $this->sendLink($to, $link['url'], $link['title'] ?? $link['url'], $previewBase64, $link['description'] ?? null);
             }
