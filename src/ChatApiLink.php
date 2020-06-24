@@ -76,7 +76,7 @@ class ChatApiLink
     {
         if (strpos($previewImage, 'http://') === false
             && strpos($previewImage, 'https://') === false
-            && strpos($previewImage, 'base64,') === false
+            && strpos($previewImage, 'data:image/') === false
             && !file_exists($previewImage)) {
             throw new InvalidArgumentException(sprintf('Preview image invalid: %s', $previewImage));
         }
