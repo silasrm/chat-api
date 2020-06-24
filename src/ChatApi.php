@@ -99,7 +99,7 @@ final class ChatApi
      */
     public function sendPhoneMessage($chat, $text)
     {
-        return json_decode($this->sdk->query('sendMessage', ['phone' => $chat, 'body' => $text], 'POST'), 1)['sent'];
+        return json_decode($this->sdk->query('sendMessage', ['phone' => $chat, 'body' => $text], 'POST'), true)['sent'];
     }
 
     /**
