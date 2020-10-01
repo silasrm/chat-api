@@ -43,7 +43,10 @@ class ChatApiMessage
     public function __construct(string $content = '', array $instance = null)
     {
         $this->content($content);
-        $this->onInstance($instance);
+
+        if (!empty($instance) && is_array($instance)) {
+            $this->onInstance($instance);
+        }
     }
 
     public function getChannel(): ?string
@@ -52,10 +55,10 @@ class ChatApiMessage
     }
 
     /**
-     * @param array $instance
+     * @param array|null $instance
      * @return ChatApiMessage
      */
-    public function onInstance(array $instance): self
+    public function onInstance(array $instance = null): self
     {
         $this->instance = $instance;
 
