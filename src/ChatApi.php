@@ -10,28 +10,64 @@ use Mike4ip\ChatApi as ChatApiSDK;
  * Class ChatApi
  * @package Silasrm\ChatApi
  */
-final class ChatApi
+final class ChatApi extends ChatApiSDK
 {
-    /** @var \Mike4ip\ChatApi */
-    private $sdk;
-
-    /** @var string */
-    private $url;
-
-    /** @var string */
-    private $token;
+//    /** @var ChatApiSDK */
+//    private $sdk;
+//
+//    /** @var string */
+//    private $url;
+//
+//    /** @var string */
+//    private $token;
+//
+//    /**
+//     * @param ChatApiSDK $sdk
+//     * @param string $url
+//     * @param string $token
+//     * @return void
+//     */
+//    public function __construct(ChatApiSDK $sdk, string $url, string $token)
+//    {
+//        $this->sdk = $sdk;
+//        $this->url = rtrim($url, '/');
+//        $this->token = $token;
+//    }
 
     /**
-     * @param \Mike4ip\ChatApi $sdk
-     * @param string $url
-     * @param string $token
-     * @return void
+     * Set Chat API Url.
+     *
+     * @param $url
+     * @return ChatApi
      */
-    public function __construct(ChatApiSDK $sdk, string $url, string $token)
+    public function setUrl($url): self
     {
-        $this->sdk = $sdk;
-        $this->url = rtrim($url, '/');
+        $this->url = $url;
+
+        return $this;
+    }
+
+    /**
+     * Returns Chat API Url.
+     *
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
+
+    /**
+     * Set Chat API Token.
+     *
+     * @param $token
+     * @return ChatApi
+     */
+    public function setToken($token): self
+    {
         $this->token = $token;
+
+        return $this;
     }
 
     /**
@@ -51,8 +87,12 @@ final class ChatApi
      * @param array $message
      * @return void
      */
-    public function sendMessage(string $to, array $message): void
+    public function send(string $to, array $message): void
     {
+        if (isset($message['instance'])) {
+            $this->loadInstance($message['instance']);
+        }
+
         if (isset($message['body']) && !empty($message['body'])) {
             $this->sendPhoneMessage($to, $message['body']);
         }
@@ -99,7 +139,7 @@ final class ChatApi
      */
     public function sendPhoneMessage($chat, $text)
     {
-        return json_decode($this->sdk->query('sendMessage', ['phone' => $chat, 'body' => $text], 'POST'), true)['sent'];
+        return json_decode($this->query('sendMessage', ['phone' => $chat, 'body' => $text], 'POST'), true)['sent'];
     }
 
     /**
@@ -113,7 +153,7 @@ final class ChatApi
      */
     public function sendFile($channel, $body, $filename, $caption = null, $channelType = 'phone')
     {
-        return json_decode($this->sdk->query('sendFile', [$channelType => $channel, 'body' => $body, 'filename' => $filename, 'caption' => $caption], 'POST'), true)['sent'];
+        return json_decode($this->query('sendFile', [$channelType => $channel, 'body' => $body, 'filename' => $filename, 'caption' => $caption], 'POST'), true)['sent'];
     }
 
     /**
@@ -128,6 +168,21 @@ final class ChatApi
      */
     public function sendLink($channel, $body, $title, $previewBase64, $description = null, $channelType = 'phone')
     {
-        return json_decode($this->sdk->query('sendLink', [$channelType => $channel, 'body' => $body, 'title' => $title, 'previewBase64' => $previewBase64, 'description' => $description], 'POST'), true)['sent'];
+        return json_decode($this->query('sendLink', [$channelType => $channel, 'body' => $body, 'title' => $title, 'previewBase64' => $previewBase64, 'description' => $description], 'POST'), true)['sent'];
+    }
+
+    /**
+     * @param $instance
+     * @return ChatApi
+     */
+    protected function loadInstance($instance): self
+    {
+        if (is_array($instance) && count($instance) === 2 && isset($instance['url'], $instance['token'])
+            && !empty($instance['url']) && !empty($instance['token'])) {
+            $this->url = $instance['url'];
+            $this->token = $instance['token'];
+        }
+
+        return $this;
     }
 }

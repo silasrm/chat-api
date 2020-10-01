@@ -19,6 +19,11 @@ class ChatApiMessage
     protected $links = [];
 
     /**
+     * @var array
+     */
+    protected $instance = [];
+
+    /**
      * Create a new instance of ChatApiMessage.
      *
      * @param string $content
@@ -33,15 +38,28 @@ class ChatApiMessage
      * Create a new instance of ChatApiMessage.
      *
      * @param string $content
+     * @param array|null $instance
      */
-    public function __construct(string $content = '')
+    public function __construct(string $content = '', array $instance = null)
     {
         $this->content($content);
+        $this->onInstance($instance);
     }
 
     public function getChannel(): ?string
     {
         return $this->channel;
+    }
+
+    /**
+     * @param array $instance
+     * @return ChatApiMessage
+     */
+    public function onInstance(array $instance): self
+    {
+        $this->instance = $instance;
+
+        return $this;
     }
 
     /**
@@ -157,6 +175,7 @@ class ChatApiMessage
             'channel' => $this->channel,
             'attachments' => $attachments,
             'links' => $links,
+            'instance' => $this->instance,
         ]);
     }
 }
