@@ -57,6 +57,6 @@ final class ChatApiChannel
      */
     private function sendMessage(string $to, ChatApiMessage $message): void
     {
-        $this->chatApi->sendMessage($to, $message->toArray());
+        $this->chatApi->send($to, $message->toArray());
     }
 }
