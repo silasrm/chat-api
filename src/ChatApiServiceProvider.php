@@ -22,9 +22,8 @@ final class ChatApiServiceProvider extends ServiceProvider
             ->needs(ChatApi::class)
             ->give(function () {
                 return new ChatApi(
-                    new ChatApiSDK(Config::get('services.chatapi.token'), Config::get('services.chatapi.url')),
-                    Config::get('services.chatapi.url'),
-                    Config::get('services.chatapi.token')
+                    Config::get('services.chatapi.token'),
+                    Config::get('services.chatapi.url')
                 );
             });
     }
